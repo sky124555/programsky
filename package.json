@@ -1,8 +1,8 @@
 {
-  "name": "v18.17.1-win-x64",
+  "name": "v16.20.0-win-x64",
   "version": "1.0.0",
   "description": "Node.js is an open-source, cross-platform JavaScript runtime environment.",
-  "main": "index.js",
+  "main": "server.js",
   "dependencies": {
     "corepack": "^0.18.0",
     "ejs": "^3.1.9",
