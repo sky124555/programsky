@@ -1,0 +1,22 @@
+// function correct(team){
+//    alert("test");
+//    if (team=="team1"){
+//         document.getElementById("finished").style.display="none";
+//         document.getElementById("mistake01").style.display="none";
+//         document.getElementById("correct01").style.display="inline";
+//         document.getElementById("msg").value="One team made a mistake.";
+//    }else if(team=="team2"){
+//         document.getElementById("finished2").style.display="none";
+//         document.getElementById("mistake02").style.display="none";
+//         document.getElementById("correct02").style.display="inline";
+//         document.getElementById("msg").value="One team made a mistake.";
+//    }else if (team=="team3"){
+//         document.getElementById("finished3").style.display="none";
+//         document.getElementById("mistake03").style.display="none";
+//         document.getElementById("correct03").style.display="inline";
+//         document.getElementById("msg").value="One team made a mistake.";
+//       }
+//     var button2 =document.getElementById("btn2");
+//     button2.click();
+// }
+// 上　訂正機能

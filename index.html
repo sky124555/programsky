@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>test</title>
+  <style>
+    #video{display: none;}
+    #AdminPanel{display: none;}
+    #clear{display: none;}
+    #frm-post{display: none;}
+    .correct{display: none;}
+    #end01,#end02,#end03{display: none;}
+  </style>
+</head>
+<body>
+<div id="choice">
+  <input type="button" value="映像" onclick="buttonClick()">
+  <input type="button" value="管理" onclick="buttonClick2()">
+</div>
+<div id="video">
+  <h1>test</h1>
+  <!-- 履歴ログ -->
+  <div id="videocontent">ビデオなし</div>
+  <div id="audiocontent">音声なし</div>
+</div>
+<div id="AdminPanel">
+  <!-----タイマーの3分を表示------------------------------------------>
+  <p id="default">03:00</p>
+  <!-----スタートボタンを表示----------------------------------------->
+  <input type="button" value="スタート" id="watchstart" onclick="count_start()">
+  <!-- クリアしたか失敗したか入力する -->
+  <div id="clear">
+    <p>チーム1
+      <input type="button" value="クリア" id="finished" onclick="finished('team1',true)">
+      <input type="button" value="失敗" id="mistake01" onclick="finished('team1',false)">
+      <span id="end01">終了済み</span>
+    </p>
+    <p >チーム2
+      <input type="button" value="クリア" id="finished2" onclick="finished('team2',true)">
+      <input type="button" value="失敗" id="mistake02" onclick="finished('team2',false)">
+      <span id="end02">終了済み</span>
+    </p>
+    <p>チーム3
+      <input type="button" value="クリア" id="finished3" onclick="finished('team3',true)">
+      <input type="button" value="失敗" id="mistake03" onclick="finished('team3',false)">
+      <span id="end03">終了済み</span>
+    </p>
+  </div>
+  <!-- 送信フォーム -->
+  <form id="frm-post" >
+    <input type="text" id="msg">
+    <button id="btn2">送信</button>
+  </form>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  // あっていればfinshedと送り間違えていたらmistakeと送る
+  var c=0
+  function finished(team,tf){
+    if (tf){
+      c+=1
+      if (team=="team1"){
+        document.getElementById("finished").style.display="none";
+        document.getElementById("mistake01").style.display="none";
+        // document.getElementById("correct01").style.display="inline";
+        // 上　訂正機能
+        document.getElementById("end01").style.display="inline";
+      }else if(team=="team2"){
+        document.getElementById("finished2").style.display="none";
+        document.getElementById("mistake02").style.display="none";
+        // document.getElementById("correct02").style.display="inline";
+        // 上　訂正機能
+        document.getElementById("end02").style.display="inline";
+      }else if (team=="team3"){
+        document.getElementById("finished3").style.display="none";
+        document.getElementById("mistake03").style.display="none";
+        // document.getElementById("correct03").style.display="inline";
+        // 上　訂正機能;
+        document.getElementById("end03").style.display="inline";
+      }
+      if (c ==1){
+        document.getElementById("msg").value="one team finished";
+      } else if (c==2) {
+        document.getElementById("msg").value="two teams finished";
+      } else if(c==3) {
+        count_stop();
+        document.getElementById("msg").value="three teams finished";
+        var time = document.getElementById("default");
+        time.style.color = 'red';
+        time.innerHTML = "Finished!";
+        var start = document.getElementById("watchstart");
+        start.style.display="inline";
+        c=0;
+      }
+    }else{
+      document.getElementById("msg").value="One team made a mistake.";
+    }
+    var button2 =document.getElementById("btn2");
+    button2.click();
+}
+  //ストップウォッチ---------------------------------------------------------------
+  //変数の定義---------------------------------------------------------------------
+  var count   = 180;     //カウントダウンの数字を格納する変数  3分なので180
+  var min     = 0;       //残り時間「分」を格納する変数
+  var sec     = 0;       //残り時間「秒」を格納する変数
+  var start_f = false; 
+  var interval;
+//001----------スタート開始------------------------------------------------------
+function count_start(){
+        var time = document.getElementById("default");
+        time.style.color = 'black';
+        count   = 180;//180
+        document.getElementById("default").innerHTML = "03:00";
+        var start = document.getElementById("watchstart");
+        start.style.display="none";
+        document.getElementById("msg").value="start";
+        var button2 =document.getElementById("btn2");
+        button2.click();
+        c=0;
+        document.getElementById("clear").style.display="inline";
+        document.getElementById("finished").style.display="inline";
+        document.getElementById("mistake01").style.display="inline";
+        document.getElementById("end01").style.display="none";
+        document.getElementById("finished2").style.display="inline";
+        document.getElementById("mistake02").style.display="inline";
+        document.getElementById("end02").style.display="none";
+        document.getElementById("finished3").style.display="inline";
+        document.getElementById("mistake03").style.display="inline";
+        document.getElementById("end03").style.display="none";
+//002------------二度押しを防止する
+        if (start_f === false) {
+//003------------1秒毎にcont_down関数を呼び出す
+          interval = setInterval(count_down,1000);
+          start_f = true;
+        }else{alert("error");}
+    }
+//-------------------------------------------------------------------------------
+//004------------カウントダウンの開始---------------------------------------------
+    function count_down(){
+//005------------リセットする-----------------------------------------------------
+        if(count === 1){
+            count_stop();
+            var time = document.getElementById("default");
+            time.style.color = 'red';
+            time.innerHTML = "Game over!";
+            clearInterval(interval);
+            document.getElementById("finished").style.display="none";
+            document.getElementById("finished2").style.display="none";
+            document.getElementById("mistake02").style.display="none";
+            document.getElementById("finished3").style.display="none";
+            document.getElementById("mistake01").style.display="none";
+            document.getElementById("mistake03").style.display="none";
+            var start = document.getElementById("watchstart");
+            start.style.display="inline";
+            document.getElementById("msg").value="gameover";
+            var button2 =document.getElementById("btn2");
+            button2.click();
+
+//006----------1秒減らす------------------------------------------------------------
+        } else {
+            count--;
+//007----------Math.floor関数を使って小数点になった分を整数に変換する。---------------
+            min = Math.floor(count / 60);
+//008------------60秒で割ったあまりが秒となる----------------------------------------
+            sec = count % 60;
+            var count_down = document.getElementById("default");
+            count_down.innerHTML = ("0"+min) +":" + ("0"+sec).slice(-2);
+        }
+    }
+//009-----------ストップウォッチを止める-------------------------------------------- 
+    function count_stop(){
+        clearInterval(interval);
+        start_f = false;
+    }
+    // 映像を選ぶ
+    function buttonClick(){
+    var video = document.getElementById("video");
+    video.style.display="inline";
+    var choice = document.getElementById("choice");
+    choice.style.display="none";
+    }
+  // 管理者画面を選ぶ
+  function buttonClick2(){
+    var AdminPanel = document.getElementById("AdminPanel");
+    AdminPanel.style.display="inline";
+    var choice = document.getElementById("choice");
+    choice.style.display="none";
+  }
+  //-------------------------------------
+  // Socket.ioサーバへ接続
+  //-------------------------------------
+  const socket = io();
+  /**
+   * [イベント] フォームが送信された
+   */
+  document.querySelector("#frm-post").addEventListener("submit", (e)=>{
+    // 規定の送信処理をキャンセル(画面遷移しないなど)
+    e.preventDefault();
+
+    // 入力内容を取得する
+    const msg = document.querySelector("#msg");
+    if( msg.value === "" ){
+      return(false);
+    }
+
+    // Socket.ioサーバへ送信
+    socket.emit("post", {text: msg.value});
+
+    // 送信フォームを空にする
+    msg.value = "";
+  });
+
+  /**
+   * [イベント] イベントが起こる
+   */
+  // ここにビデオの切り替えを書く
+  socket.on("member-post", (msg)=>{
+    if (msg.text=="start"){
+      document.getElementById("videocontent").innerHTML="<p>ビデオ："+msg.text+"</p>";
+      document.getElementById("audiocontent").innerHTML="音声なし";
+    }else if (msg.text=="three teams finished" || msg.text=="gameover"){
+      document.getElementById("videocontent").innerHTML="<p>ビデオ："+msg.text+"</p>";
+    }else{
+      document.getElementById("audiocontent").innerHTML="<p>音声："+msg.text+"</p>";
+    }
+    
+  });
+
+  /**
+   * [イベント] ページの読込み完了
+   */
+  window.onload = ()=>{
+    // テキストボックスを選択する
+    document.querySelector("#msg").focus();
+  }
+</script>
+</body>
+</html>
