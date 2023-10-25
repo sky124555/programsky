@@ -5,7 +5,7 @@ const io   = require("socket.io")(http);
 /**
  * "/"にアクセスがあったらindex.htmlを返却
  */
-app.get("/chat/", (req, res)=>{
+app.get("/video/", (req, res)=>{
   res.sendFile(__dirname + "/index.html");
 });
 
