@@ -24,6 +24,6 @@ io.on("connection", (socket)=>{
 /**
  * 3000番でサーバを起動する
  */
-http.listen(3000, ()=>{
-  console.log("listening on *:3000");
+http.listen(10000, ()=>{
+  console.log("listening on *:10000");
 });
