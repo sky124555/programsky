@@ -8,8 +8,11 @@
     #AdminPanel{display: none;}
     #clear{display: none;}
     #frm-post{display: none;}
-    .correct{display: none;}
     #end01,#end02,#end03{display: none;}
+    #audio1{display: none;}
+    #audio2{display: none;}
+    #audio3{display: none;}
+    #audio4{display: none;}
   </style>
 </head>
 <body>
@@ -18,10 +21,11 @@
   <input type="button" value="管理" onclick="buttonClick2()">
 </div>
 <div id="video">
-  <h1>test</h1>
-  <!-- 履歴ログ -->
-  <div id="videocontent">ビデオなし</div>
-  <div id="audiocontent">音声なし</div>
+  <video src="/videoplayer" width="1080px" id="video1"></video> 
+  <audio src="/audioplayer1" id="audio1" controls></audio>
+  <audio src="/audioplayer2" id="audio2" controls></audio><!--oneteamfinished.mp3-->
+  <audio src="/audioplayer3" id="audio3" controls></audio><!--finished.mp3-->
+  <audio src="/audioplayer4" id="audio4" controls></audio><!--gameover.mp3-->
 </div>
 <div id="AdminPanel">
   <!-----タイマーの3分を表示------------------------------------------>
@@ -173,12 +177,14 @@ function count_start(){
         clearInterval(interval);
         start_f = false;
     }
+    var change = "";
     // 映像を選ぶ
     function buttonClick(){
     var video = document.getElementById("video");
     video.style.display="inline";
     var choice = document.getElementById("choice");
     choice.style.display="none";
+    change = "video";
     }
   // 管理者画面を選ぶ
   function buttonClick2(){
@@ -186,6 +192,7 @@ function count_start(){
     AdminPanel.style.display="inline";
     var choice = document.getElementById("choice");
     choice.style.display="none";
+    change = "AdminPanel";
   }
   //-------------------------------------
   // Socket.ioサーバへ接続
@@ -217,12 +224,39 @@ function count_start(){
   // ここにビデオの切り替えを書く
   socket.on("member-post", (msg)=>{
     if (msg.text=="start"){
-      document.getElementById("videocontent").innerHTML="<p>ビデオ："+msg.text+"</p>";
-      document.getElementById("audiocontent").innerHTML="音声なし";
-    }else if (msg.text=="three teams finished" || msg.text=="gameover"){
-      document.getElementById("videocontent").innerHTML="<p>ビデオ："+msg.text+"</p>";
-    }else{
-      document.getElementById("audiocontent").innerHTML="<p>音声："+msg.text+"</p>";
+      if (change == "video"){
+      var video = document.getElementById("video1");
+      video.play();
+      var audio = document.getElementById("audio1");
+      audio.play();
+      document.getElementById("audio2").pause();
+      document.getElementById("audio3").pause();
+      document.getElementById("audio4").pause();
+      }
+    }else if (msg.text=="one team finished"){
+      if (change == "video"){
+      var audio2 = document.getElementById("audio2");
+      audio2.play();
+      document.getElementById("audio1").pause();
+      document.getElementById("audio3").pause();
+      document.getElementById("audio4").pause();
+      }
+    }else if (msg.text=="three teams finished"){
+      if (change == "video"){
+      var audio3 = document.getElementById("audio3");
+      audio3.play();
+      document.getElementById("audio1").pause();
+      document.getElementById("audio2").pause();
+      document.getElementById("audio4").pause();
+      }
+    }else if (msg.text=="gameover"){
+      if (change == "video"){
+      var audio4 = document.getElementById("audio4");
+      audio4.play();
+      document.getElementById("audio1").pause();
+      document.getElementById("audio2").pause();
+      document.getElementById("audio3").pause();
+      }
     }
     
   });
